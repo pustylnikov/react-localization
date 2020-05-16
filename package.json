@@ -1,0 +1,47 @@
+{
+  "name": "@anvilapp/react-localization",
+  "version": "0.1.0",
+  "description": "React localization",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "yura.pustylnikov@gmail.com",
+  "homepage": "https://github.com/pustylnikov/react-localization",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pustylnikov/react-localization.git"
+  },
+  "scripts": {
+    "build": "yarn run lint && rm -rf ./dist && tsc --project tsconfig.json",
+    "release-dry": "yarn run build && npm publish --access public --dry-run",
+    "release": "yarn run build && npm publish --access public",
+    "test": "jest",
+    "reinstall-modules": "rm -rf node_modules && yarn",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint-fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+  },
+  "dependencies": {
+    "@anvilapp/localization": "^0.1.0"
+  },
+  "peerDependencies": {
+    "@anvilapp/localization": "^0.1.0",
+    "react": ">=16.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.35",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "eslint": "^7.0.0",
+    "husky": "^4.2.5",
+    "react": "^16.13.1",
+    "typescript": "^3.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint"
+    }
+  },
+  "files": [
+    "dist/*"
+  ]
+}
