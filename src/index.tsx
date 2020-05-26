@@ -1,5 +1,11 @@
 import React, { useContext, useCallback } from 'react';
-import { createTranslator } from '@anvilapp/localization';
+
+/**
+ * Types
+ */
+type Translate = { [key: string]: string }
+
+type Translates = { [key: string]: Translate }
 
 type Props = {
     value: string,
@@ -8,12 +14,75 @@ type Props = {
 
 export type Translator = (locale: string, key: string, ...args: Array<any>) => string
 
+let localization: Translates = {};
 let LocalizationContext: React.Context<string | undefined> | null = null;
 
+/**
+ * Set localization data
+ *
+ * @param data
+ */
+export function setLocalizations(data: Translates): void {
+    localization = data;
+}
+
+/**
+ * Returns translate string
+ *
+ * @param locale
+ * @param key
+ * @param args
+ */
+export function trans(locale: string, key: string, ...args: Array<any>): string {
+    const str = getTranslate(locale, key);
+    let i = 0;
+    return str.replace(/%?%s/g, function (s: string) {
+        if (s === '%%s') {
+            return '%s';
+        }
+        const replace = i in args ? args[i] : s;
+        ++i;
+        return replace;
+    });
+}
+
+/**
+ * Translator creator
+ *
+ * @param lang
+ */
+export function createTranslator(lang: string) {
+    return function (key: string, ...args: Array<any>) {
+        return trans(lang, key, ...args);
+    };
+}
+
+/**
+ * Returns translate
+ * @param locale
+ * @param key
+ */
+function getTranslate(locale: string, key: string): string {
+    if (key in localization[locale]) {
+        return localization[locale][key];
+    }
+    return 'NO_TRANSLATE: ' + key;
+}
+
+/**
+ * Context creator
+ */
 function createContext(value?: string): void {
     LocalizationContext = React.createContext(value);
 }
 
+/**
+ * Context provider
+ *
+ * @param children
+ * @param value
+ * @constructor
+ */
 export const LocalizationProvider: React.FC<Props> = ({ children, value }) => {
     if (!LocalizationContext) {
         createContext(value);
@@ -28,6 +97,9 @@ export const LocalizationProvider: React.FC<Props> = ({ children, value }) => {
     return null;
 };
 
+/**
+ * Returns translator
+ */
 export function useTranslator(): Translator | void {
     if (LocalizationContext) {
         const value = useContext(LocalizationContext);
@@ -37,6 +109,9 @@ export function useTranslator(): Translator | void {
     }
 }
 
+/**
+ * Returns current language
+ */
 export function useLanguage(): string | void {
     if (LocalizationContext) {
         return useContext(LocalizationContext);

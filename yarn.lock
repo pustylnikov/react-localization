@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@anvilapp/localization@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@anvilapp/localization/-/localization-0.1.0.tgz#0d3be160589056c73378241307e1af050debb440"
-  integrity sha512-OYi9IPBHK6GzOyY3bHihB0eV3kOEme8Y0CWQXe3PwzjApvWwbziKtsA3vYQXLw4/zMKziWm2bV2wdoZvfNEBJQ==
-
 "@babel/code-frame@^7.0.0":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"

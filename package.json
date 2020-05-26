@@ -1,6 +1,6 @@
 {
   "name": "@anvilapp/react-localization",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React localization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,11 +20,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
   },
-  "dependencies": {
-    "@anvilapp/localization": "^0.1.0"
-  },
   "peerDependencies": {
-    "@anvilapp/localization": "^0.1.0",
     "react": ">=16.0"
   },
   "devDependencies": {
