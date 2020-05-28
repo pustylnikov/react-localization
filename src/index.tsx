@@ -12,9 +12,14 @@ type Props = {
     children: React.ReactNode,
 }
 
+type Options = {
+    noTranslatePrefix?: string,
+}
+
 export type Translator = (locale: string, key: string, ...args: Array<any>) => string
 
 let localization: Translates = {};
+let _options: Options = {};
 let LocalizationContext: React.Context<string | undefined> | null = null;
 
 /**
@@ -24,6 +29,10 @@ let LocalizationContext: React.Context<string | undefined> | null = null;
  */
 export function setLocalizations(data: Translates): void {
     localization = data;
+}
+
+export function setOptions(options: Options): void {
+    _options = options;
 }
 
 /**
@@ -66,7 +75,8 @@ function getTranslate(locale: string, key: string): string {
     if (key in localization[locale]) {
         return localization[locale][key];
     }
-    return 'NO_TRANSLATE: ' + key;
+    const { noTranslatePrefix } = _options;
+    return noTranslatePrefix ? noTranslatePrefix + key : key;
 }
 
 /**
