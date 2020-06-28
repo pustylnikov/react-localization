@@ -20,7 +20,7 @@ export type Translator = (locale: string, key: string, ...args: Array<any>) => s
 
 let localization: Translates = {};
 let _options: Options = {};
-let LocalizationContext: React.Context<string | undefined> | null = null;
+let LocalizationContext: React.Context<string>;
 
 /**
  * Set localization data
@@ -82,7 +82,7 @@ function getTranslate(locale: string, key: string): string {
 /**
  * Context creator
  */
-function createContext(value?: string): void {
+function createContext(value: string): void {
     LocalizationContext = React.createContext(value);
 }
 
@@ -94,7 +94,7 @@ function createContext(value?: string): void {
  * @constructor
  */
 export const LocalizationProvider: React.FC<Props> = ({ children, value }) => {
-    if (!LocalizationContext) {
+    if (!LocalizationContext && value) {
         createContext(value);
     }
     if (LocalizationContext) {
@@ -110,20 +110,14 @@ export const LocalizationProvider: React.FC<Props> = ({ children, value }) => {
 /**
  * Returns translator
  */
-export function useTranslator(): Translator | void {
-    if (LocalizationContext) {
-        const value = useContext(LocalizationContext);
-        if (value) {
-            return useCallback(createTranslator(value), [value]);
-        }
-    }
+export function useTranslator(): Translator {
+    const value = useContext(LocalizationContext);
+    return useCallback(createTranslator(value), [value]);
 }
 
 /**
  * Returns current language
  */
-export function useLanguage(): string | void {
-    if (LocalizationContext) {
-        return useContext(LocalizationContext);
-    }
+export function useLanguage(): string {
+    return useContext(LocalizationContext);
 }
