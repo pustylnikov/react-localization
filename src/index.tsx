@@ -16,7 +16,7 @@ type Options = {
     noTranslatePrefix?: string,
 }
 
-export type Translator = (locale: string, key: string, ...args: Array<any>) => string
+export type Translator = (key: string, ...args: Array<any>) => string
 
 let localization: Translates = {};
 let _options: Options = {};
