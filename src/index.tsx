@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 /**
  * Types
@@ -8,15 +8,17 @@ type Translate = { [key: string]: string }
 type Translates = { [key: string]: Translate }
 
 type Props = {
-    value: string,
-    children: React.ReactNode,
+  value: string,
+  children: React.ReactNode,
 }
 
 type Options = {
-    noTranslatePrefix?: string,
+  noTranslatePrefix?: string,
 }
 
-export type Translator = (key: string, ...args: Array<any>) => string
+type TranslateArgs = undefined | { [key: string]: string | number | null | undefined };
+
+export type Translator = (key: string, args: TranslateArgs) => string
 
 let localization: Translates = {};
 let _options: Options = {};
@@ -24,100 +26,86 @@ let LocalizationContext: React.Context<string>;
 
 /**
  * Set localization data
- *
- * @param data
  */
 export function setLocalizations(data: Translates): void {
-    localization = data;
+  localization = data;
 }
 
 export function setOptions(options: Options): void {
-    _options = options;
+  _options = options;
 }
 
 /**
  * Returns translate string
- *
- * @param locale
- * @param key
- * @param args
  */
-export function trans(locale: string, key: string, ...args: Array<any>): string {
-    const str = getTranslate(locale, key);
-    let i = 0;
-    return str.replace(/%?%s/g, function (s: string) {
-        if (s === '%%s') {
-            return '%s';
-        }
-        const replace = i in args ? args[i] : s;
-        ++i;
-        return replace;
+export function trans(
+  locale: string, key: string, args: TranslateArgs = {}): string {
+  const str = getTranslate(locale, key);
+
+  if (Object.keys(args).length) {
+    return str.replace(/\{([a-z0-9]+)\}/gm, (...match) => {
+      const replacer = args[match[1]];
+
+      return `${replacer ?? (replacer === null ? '' : match[0])}`;
     });
+  }
+
+  return str;
 }
 
 /**
  * Translator creator
- *
- * @param lang
  */
 export function createTranslator(lang: string) {
-    return function (key: string, ...args: Array<any>) {
-        return trans(lang, key, ...args);
-    };
+  return (key: string, args: TranslateArgs) => trans(lang, key, args);
 }
 
 /**
  * Returns translate
- * @param locale
- * @param key
  */
 function getTranslate(locale: string, key: string): string {
-    if (key in localization[locale]) {
-        return localization[locale][key];
-    }
-    const { noTranslatePrefix } = _options;
-    return noTranslatePrefix ? noTranslatePrefix + key : key;
+  if (key in localization[locale]) {
+    return localization[locale][key];
+  }
+  const { noTranslatePrefix } = _options;
+  return noTranslatePrefix ? noTranslatePrefix + key : key;
 }
 
 /**
  * Context creator
  */
 function createContext(value: string): void {
-    LocalizationContext = React.createContext(value);
+  LocalizationContext = React.createContext(value);
 }
 
 /**
  * Context provider
- *
- * @param children
- * @param value
- * @constructor
  */
 export const LocalizationProvider: React.FC<Props> = ({ children, value }) => {
-    if (!LocalizationContext && value) {
-        createContext(value);
-    }
-    if (LocalizationContext) {
-        return (
-            <LocalizationContext.Provider value={value}>
-                {children}
-            </LocalizationContext.Provider>
-        );
-    }
-    return null;
+  if (!LocalizationContext && value) {
+    createContext(value);
+  }
+  if (LocalizationContext) {
+    return (
+      <LocalizationContext.Provider value={value}>
+        {children}
+      </LocalizationContext.Provider>
+    );
+  }
+  return null;
 };
 
 /**
  * Returns translator
  */
 export function useTranslator(): Translator {
-    const value = useContext(LocalizationContext);
-    return useCallback(createTranslator(value), [value]);
+  const value = useContext(LocalizationContext);
+  return useCallback(createTranslator(value), [value]);
 }
 
 /**
  * Returns current language
  */
 export function useLanguage(): string {
-    return useContext(LocalizationContext);
+  return useContext(LocalizationContext);
 }
