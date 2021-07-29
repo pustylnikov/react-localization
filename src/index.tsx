@@ -16,9 +16,9 @@ type Options = {
   noTranslatePrefix?: string,
 }
 
-type TranslateArgs = undefined | { [key: string]: string | number | null | undefined };
+type TranslateArgs = { [key: string]: string | number | null | undefined };
 
-export type Translator = (key: string, args: TranslateArgs) => string
+export type Translator = (key: string, args?: TranslateArgs) => string
 
 let localization: Translates = {};
 let _options: Options = {};
@@ -57,7 +57,7 @@ export function trans(
  * Translator creator
  */
 export function createTranslator(lang: string) {
-  return (key: string, args: TranslateArgs) => trans(lang, key, args);
+  return (key: string, args?: TranslateArgs) => trans(lang, key, args);
 }
 
 /**
