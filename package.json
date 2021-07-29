@@ -1,6 +1,6 @@
 {
   "name": "@anvilapp/react-localization",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "React localization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
