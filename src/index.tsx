@@ -43,7 +43,7 @@ export function trans(
   const str = getTranslate(locale, key);
 
   if (Object.keys(args).length) {
-    return str.replace(/\{([a-z0-9]+)\}/gm, (...match) => {
+    return str.replace(/\{([a-zA-Z0-9]+)\}/gm, (...match) => {
       const replacer = args[match[1]];
 
       return `${replacer ?? (replacer === null ? '' : match[0])}`;
